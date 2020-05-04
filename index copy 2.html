@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.2/axios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="query">
+        <button @click = "onClick">send request</button>
+        </br>
+        <table style="width: 1000px; border: 1px solid black; border-collapse: collapse;">
+           <caption>Temperature in {{query}}</caption>
+                <tr style="width: 100%;">
+                    <th v-for = 'item in this.info.slice(0,5)' style="border: 1px solid black;">{{item.dt_txt}}</th>
+                </tr>
+                <tr>
+                    <td v-for = 'item in this.info.slice(0,5)' style="border: 1px solid black;">Temp = {{item.main.temp}}</td>
+                </tr>
+        </table>
+
+
+        <template>
+            <div>
+                <div id="chart" ref="barchart"></div>
+            </div>
+        </template>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+                data: { 
+                    info: '',
+                    key: 'ad628c3ff34d34a2909a06ce888926bd',
+                    query: ''
+                },
+                methods: {
+                    onClick() {
+                        axios 
+                        .get(`http://api.openweathermap.org/data/2.5/forecast?q=${this.query}&appid=${this.key}`)
+                        .then((response) => {
+                                this.info = response.data.list;
+
+                                let massWeather = [];
+                                let massTemp = [];
+
+
+                                for (const key in this.info) {
+                                    massWeather.push(this.info[key].dt_txt);
+                                    massTemp.push(this.info[key].main.temp);
+                                    // console.log(massTemp);
+                                }
+                                this.test(massWeather, massTemp);
+                            });
+                        
+                    },
+                    test(dataTime, dataTemp) {
+                    new ApexCharts(this.$refs.barchart, {
+                        chart: {
+                            type: 'bar',
+                            height: 400
+                        },
+                        series: [{
+                            name: 'sales',
+                            data:  dataTemp
+                        }],
+                        xaxis: {
+                            categories: dataTime
+                        }
+                    }).render()
+                    }
+                }
+        })
+    </script>
+</body>
+</html>
+
+
+

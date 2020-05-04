@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.2/axios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
+</head>
+<body>
+    <div id="app">
+        <p>{{ message }}</p>
+        <input type="text" v-model="query">
+        <button @click = "result">send request</button>
+        </br>
+        <table style="width: 1000px;">
+           <caption>Temperature in {{query}}</caption>
+                <tr style="width: 100%;">
+                    <!-- <th v-for = 'item in data.slice(0,5)'>{{item.dt_txt}}</th> -->
+                </tr>
+                <tr>
+                    <!-- <td v-for = 'item in data.slice(0,5)'>Temp = {{item.main.temp}}</td> -->
+                </tr>
+        </table>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+                data: {
+                    message: 'Привет, Vue!',
+                    info: '',
+                    key: 'ad628c3ff34d34a2909a06ce888926bd',
+                    query: ''
+                },
+                methods: {
+                    onClick(onSucces) {
+                        axios 
+                        .get(`http://api.openweathermap.org/data/2.5/forecast?q=${this.query}&appid=${this.key}`)
+                        .then((response) => {
+                                // this.info = response.data.list;
+                                // console.log(response);
+                                onSucces(response.data);
+                                // console.log(this.info);
+                            });
+                    },
+                    result() {
+                        onClick(sliceElim);
+                    },
+                    sliceElim(obj) {
+                        // let data = obj.data;
+                        console.log(obj);
+                        // for(item in obj) {
+                        //     console.log(this.info[item]);
+                        //     data = this.obj[item];
+                        //     console.log('ПИУ ПИУ' + this.obj[item]);
+                        // }
+                        // return data;
+                    }
+                }
+        })
+    </script>
+</body>
+</html>
+
+
+
